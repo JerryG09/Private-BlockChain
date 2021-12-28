@@ -170,6 +170,38 @@ class Blockchain {
         })
     }
 
+    /**
+     * This method will return a Promise that will resolve with the list of errors when validating the chain.
+     */
+     validateChain(){
+        let self = this;
+        return new Promise(async (resolve, reject) => {
+            let errorLog = self.chain.reduce(async(acc, currentBlock, index) => {
+                if (index === 0) {
+                    // console.log('Genesis Block')
+                    return;
+                }
+                let prevBlock = self.chain[index - 1];
+                let isCurrentBlockValid = await currentBlock.validate();
+                let isPreviousBlockValid = await prevBlock.validate();
+                let prevBlockHash = prevBlock.hash;
+                let currentBlockPrevHash = currentBlock.previousBlockHash;
+                if (isCurrentBlockValid && isPreviousBlockValid) {
+                    if (prevBlockHash !== currentBlockPrevHash) {
+                        acc.push({err: new Error('Link is Invalid')})
+                    }
+                } else {
+                    acc.push({err: new Error('Link is Invalid')})
+                }
+                return acc;
+            }, []);
+            if (errorLog.length > 0 ) {
+                resolve(errorLog)
+            }else {
+                resolve('No error')
+            }
+        })
+    }
 }
 
 module.exports.Blockchain = Blockchain;   
