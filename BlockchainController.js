@@ -6,6 +6,7 @@ class BlockchainController {
         // All the endpoints methods needs to be called in the constructor to initialize the route.
         this.getBlockByHeight();
         this.getValidChain();
+        this.requestOwnership();
     }
 
     // Enpoint to Get a Block by Height (GET Endpoint)
@@ -41,6 +42,23 @@ class BlockchainController {
                 return res.status(404).send("BlockChain Not Found! Review the Parameters!");
             }
             
+        });
+    }
+
+    // Endpoint that allows user to request Ownership of a Wallet address (POST Endpoint)
+    requestOwnership() {
+        this.app.post("/requestValidation", async (req, res) => {
+            if(req.body.address) {
+                const address = req.body.address;
+                const message = await this.blockchain.requestMessageOwnershipVerification(address);
+                if(message){
+                    return res.status(200).json(message);
+                } else {
+                    return res.status(500).send("An error happened!");
+                }
+            } else {
+                return res.status(500).send("Check the Body Parameter!");
+            }
         });
     }
 
