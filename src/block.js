@@ -10,6 +10,7 @@
  */
 
 const SHA256 = require('crypto-js/sha256');
+const hex2ascii = require('hex2ascii');
 
 class Block {
 
@@ -46,6 +47,27 @@ class Block {
              }else{
             // Returning the Block is valid
                  resolve(true);
+             }
+        });
+    }
+
+    /**
+     *  Auxiliary Method to return the block body (decoding the data)
+     */
+    getBData() {
+        let self = this;
+         return new Promise((resolve, reject) => {
+             // Getting the encoded data saved in the Block
+             let encodedData = self.body;
+             // Decoding the data to retrieve the JSON representation of the object
+             let decodedData = hex2ascii(encodedData);
+             // Parse the data to an object to be retrieve.
+             let parsedData = JSON.parse(decodedData);
+             // Resolve with the data if the object isn't the Genesis block
+             if(self.height === 0){
+                 reject(Error("Your are trying to acces the genesis block"));
+             }else{
+                 resolve(parsedData);
              }
         });
     }
