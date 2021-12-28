@@ -110,6 +110,23 @@ class Blockchain {
         });
     }
 
+    /**
+     * This method will return a Promise that will resolve with the Block
+     *  with the hash passed as a parameter.
+     * @param {*} hash 
+     */
+    getBlockByHash(hash) {
+        let self = this;
+        return new Promise((resolve, reject) => {
+           let block = self.chain.filter(p => p.hash === hash)[0];
+           if (block) {
+               return resolve(block);
+           } else {
+               resolve(null);
+           }
+        });
+    }
+
 }
 
 module.exports.Blockchain = Blockchain;   
