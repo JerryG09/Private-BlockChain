@@ -52,6 +52,35 @@ class Blockchain {
         });
     }
 
+    /**
+     * _addBlock(block) will store a block in the chain
+     * @param {*} block 
+     * The method will return a Promise that will resolve with the block added
+     * or reject if an error happen during the execution.
+     */
+    _addBlock(block) {
+        let self = this;
+        return new Promise(async (resolve, reject) => {
+           if (self.chain[self.height]) {
+            block.previousBlockHash = self.chain[self.height].hash;
+           } else {
+             block.previousBlockHash = null;
+           }
+           block.time = new Date().getTime().toString().slice(0, -3);
+           block.height = self.chain.length;
+           block.hash = await SHA256(JSON.stringify(block)).toString();
+           const isValid = await this.validateChain(this.chain);
+           if(isValid === "No error") {
+               self.chain.push(block);
+               self.height += 1;
+               let newChain = this.chain;
+               resolve(block);
+           } else {
+               reject(new Error('Invalid Chain...'))
+           }
+        });
+    }
+
 }
 
 module.exports.Blockchain = Blockchain;   
