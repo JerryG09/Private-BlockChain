@@ -144,6 +144,32 @@ class Blockchain {
         });
     }
 
+    /**
+     * This method will return a Promise that will resolve with an array of Stars objects existing in the chain 
+     * and are belongs to the owner with the wallet address passed as parameter.
+     * @param {*} address 
+     */
+     getStarsByWalletAddress (address) {
+        let self = this;
+        let stars = [];
+        return new Promise((resolve, reject) => {
+            let newChain = [];
+            if (self.chain.length >= 1) {
+                newChain = self.chain.slice(1, self.chain.length);
+            }
+            newChain.forEach(async(block) => {
+                let blockDecoded = await block.getBData();
+                if(blockDecoded.address === address){
+                    stars.push(blockDecoded);
+                }
+                else {
+                    reject(new Error('Address not found.'));
+                }
+                resolve(stars);
+            });
+        })
+    }
+
 }
 
 module.exports.Blockchain = Blockchain;   
