@@ -81,6 +81,35 @@ class Blockchain {
         });
     }
 
+    /**
+     * The submitStar(address, message, signature, star) method
+     * will allow users to register a new Block with the star object
+     * into the chain. This method will resolve with the Block added or
+     * reject with an error.
+     * @param {*} address 
+     * @param {*} message 
+     * @param {*} signature 
+     * @param {*} star 
+     */
+    submitStar(address, message, signature, star) {
+        let self = this;
+        return new Promise(async (resolve, reject) => {
+          let messageTime = parseInt(message.split(':')[1])
+          let currenTime = parseInt(new Date().getTime().toString().slice(0, -3));
+          if ((currenTime - messageTime) > 300) {
+            reject(new Error("Five Minutes Elapsed"));
+            return;
+          }
+          if (!bitcoinMessage.verify(message, address, signature)) {
+            reject(new Error("Invalid Message Bubus"));
+          }
+          let data = { address, message, signature, star };
+          let block = new BlockClass.Block(data);
+          await self._addBlock(block);
+          resolve(block);
+        });
+    }
+
 }
 
 module.exports.Blockchain = Blockchain;   
