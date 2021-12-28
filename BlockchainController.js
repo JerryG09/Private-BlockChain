@@ -7,6 +7,7 @@ class BlockchainController {
         this.getBlockByHeight();
         this.getValidChain();
         this.requestOwnership();
+        this.submitStar();
     }
 
     // Enpoint to Get a Block by Height (GET Endpoint)
@@ -55,6 +56,30 @@ class BlockchainController {
                     return res.status(200).json(message);
                 } else {
                     return res.status(500).send("An error happened!");
+                }
+            } else {
+                return res.status(500).send("Check the Body Parameter!");
+            }
+        });
+    }
+    
+    // Endpoint that allow Submit a Star, yu need first to `requestOwnership` to have the message (POST endpoint)
+    submitStar() {
+        this.app.post("/submitstar", async (req, res) => {
+            if(req.body.address && req.body.message && req.body.signature && req.body.star) {
+                const address = req.body.address;
+                const message = req.body.message;
+                const signature = req.body.signature;
+                const star = req.body.star;
+                try {
+                    let block = await this.blockchain.submitStar(address, message, signature, star);
+                    if(block){
+                        return res.status(200).json(block);
+                    } else {
+                        return res.status(500).send("An error happened!");
+                    }
+                } catch (error) {
+                    return res.status(500).send(error);
                 }
             } else {
                 return res.status(500).send("Check the Body Parameter!");
