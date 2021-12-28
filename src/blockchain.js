@@ -29,6 +29,20 @@ class Blockchain {
         }
     }
 
+    /**
+     * The requestMessageOwnershipVerification(address) method
+     * will allow you  to request a message that you will use to
+     * sign it with your Bitcoin Wallet (Electrum or Bitcoin Core)
+     * This is the first step before submit your Block.
+     * The method return a Promise that will resolve with the message to be signed
+     * @param {*} address 
+     */
+     requestMessageOwnershipVerification(address) {
+        return new Promise((resolve) => {
+          resolve(`${address}:${new Date().getTime().toString().slice(0,-3)}:starRegistry`);
+        });
+    }
+
 }
 
 module.exports.Blockchain = Blockchain;   
