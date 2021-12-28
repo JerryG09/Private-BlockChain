@@ -127,6 +127,23 @@ class Blockchain {
         });
     }
 
+    /**
+     * This method will return a Promise that will resolve with the Block object 
+     * with the height equal to the parameter `height`
+     * @param {*} height 
+     */
+    getBlockByHeight(height) {
+        let self = this;
+        return new Promise((resolve, reject) => {
+            let block = self.chain.find(p => p.height === height);
+            if(block){
+                resolve(block);
+            } else {
+                resolve(null);
+            }
+        });
+    }
+
 }
 
 module.exports.Blockchain = Blockchain;   
